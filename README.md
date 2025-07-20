@@ -1,4 +1,3 @@
-# Poo-Plummet
 # 💩 Poo Plummet
 
 Guide your falling poo into the toilet using arrow keys.
