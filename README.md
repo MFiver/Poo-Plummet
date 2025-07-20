@@ -2,6 +2,5 @@
 
 Guide your falling poo into the toilet! Don't miss!
 
-🎮 Controls:
-- Left/right arrow keys to guide the poo
+🎮 Controls: left/right to guide the poo
 
