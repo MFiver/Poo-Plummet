@@ -22,8 +22,8 @@
     <p id="level" class="my-1 text-sm sm:text-base">Level: 1</p>
     <p id="highScore" class="my-1 text-sm sm:text-base">High Score: None</p>
     <div id="gameCanvas" class="mt-2" onselectstart="return false;">
-      <div id="leftControl" class="control-icon" style="left: 0; top: 50%; transform: translateY(-50%);"></div>
-      <div id="rightControl" class="control-icon" style="right: 0; top: 50%; transform: translateY(-50%);"></div>
+      <div id="leftControl" class="control-icon" style="left: 0; top: 50%; transform: translateY(-50%);">L</div>
+      <div id="rightControl" class="control-icon" style="right: 0; top: 50%; transform: translateY(-50%);">R</div>
     </div>
     <p id="feedback" class="mt-2 text-base sm:text-lg"></p>
     <button id="restartButton" onclick="restartGame()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 hidden">Play Again</button>
@@ -57,18 +57,19 @@
     let bonusTimer = 0;
     let bonusScore = 0;
 
+    // Touch hold variables
+    let touchActive = { left: false, right: false };
+
     function setup() {
       try {
         let canvas = createCanvas(400, 500);
         canvas.parent('gameCanvas');
         loadHighScore();
         resetLevel();
-        document.getElementById('leftControl').innerText = 'L';
-        document.getElementById('rightControl').innerText = 'R';
-        document.getElementById('leftControl').addEventListener('touchstart', () => handleTouch('left'));
-        document.getElementById('rightControl').addEventListener('touchstart', () => handleTouch('right'));
-        document.getElementById('leftControl').addEventListener('touchend', handleTouchEnd);
-        document.getElementById('rightControl').addEventListener('touchend', handleTouchEnd);
+        document.getElementById('leftControl').addEventListener('touchstart', () => startTouch('left'));
+        document.getElementById('rightControl').addEventListener('touchstart', () => startTouch('right'));
+        document.getElementById('leftControl').addEventListener('touchend', () => endTouch('left'));
+        document.getElementById('rightControl').addEventListener('touchend', () => endTouch('right'));
         document.addEventListener('keydown', () => {
           userInteracted = true;
           console.log('User interacted');
@@ -83,23 +84,15 @@
       }
     }
 
-    function handleTouch(direction) {
+    function startTouch(direction) {
       userInteracted = true;
+      touchActive[direction] = true;
       console.log('Touch started:', direction);
-      if (direction === 'left') {
-        if (!bonusGameActive) pooX -= 5;
-        else bucketX -= 5;
-      }
-      if (direction === 'right') {
-        if (!bonusGameActive) pooX += 5;
-        else bucketX += 5;
-      }
-      if (!bonusGameActive) pooX = constrain(pooX, 0, width);
-      else bucketX = constrain(bucketX, 25, width - 25);
     }
 
-    function handleTouchEnd() {
-      console.log('Touch ended');
+    function endTouch(direction) {
+      touchActive[direction] = false;
+      console.log('Touch ended:', direction);
     }
 
     function loadHighScore() {
@@ -272,6 +265,11 @@
             fill(100); // Dark gray handle
             arc(bucketX, height - 65, 20, 20, PI, 0);
 
+            // Apply consistent touch movement to bucket
+            if (touchActive.left) bucketX -= 2;
+            if (touchActive.right) bucketX += 2;
+            bucketX = constrain(bucketX, 25, width - 25);
+
             fill(255);
             textSize(20);
             text(`Time: ${Math.floor(bonusTimer / 60)}s`, width / 2, 30);
@@ -287,8 +285,12 @@
           pooX += windForce;
           if (keyIsDown(LEFT_ARROW)) pooX -= 2;
           if (keyIsDown(RIGHT_ARROW)) pooX += 2;
-          pooY += pooSpeed;
+
+          // Apply consistent touch movement to poo
+          if (touchActive.left) pooX -= 2;
+          if (touchActive.right) pooX += 2;
           pooX = constrain(pooX, 0, width);
+          pooY += pooSpeed;
 
           if (pooY >= height - 45) {
             gameOver = true;
