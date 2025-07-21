@@ -37,8 +37,6 @@
     let particles = [];
     let userInteracted = false;
     let touchDirection = null; // "left", "right", or null
-    const fartSound = new Audio('https://cdn.pixabay.com/audio/2023/03/29/12-24-24-614_1.mp3');
-    const splashSound = new Audio('https://cdn.pixabay.com/audio/2022/08/02/14-21-45-597_1.mp3');
     const colors = [
       [255, 0, 0], // Red
       [0, 0, 255], // Blue
@@ -56,16 +54,6 @@
     let bonusTimer = 0;
     let bonusScore = 0;
 
-    function preload() {
-      try {
-        fartSound.load();
-        splashSound.load();
-        console.log('Audio files preloaded');
-      } catch (e) {
-        console.error('Audio preload failed:', e);
-      }
-    }
-
     function setup() {
       try {
         let canvas = createCanvas(400, 500);
@@ -77,11 +65,11 @@
         canvas.touchEnded(handleTouchEnd);
         document.addEventListener('keydown', () => {
           userInteracted = true;
-          console.log('User interacted: audio enabled');
+          console.log('User interacted');
         });
         document.addEventListener('click', () => {
           userInteracted = true;
-          console.log('User interacted: audio enabled');
+          console.log('User interacted');
         });
         console.log('Game setup completed');
       } catch (e) {
@@ -159,9 +147,6 @@
       document.getElementById('feedback').textContent = '';
       document.getElementById('restartButton').classList.add('hidden');
       document.getElementById('level').textContent = `Level: ${level}`;
-      if (userInteracted) {
-        fartSound.play().catch(e => console.error('Fart sound failed:', e));
-      }
       console.log('Level reset:', level, 'Toilet speed:', toiletSpeed);
     }
 
@@ -220,7 +205,7 @@
           if (bonusPhase === 1) {
             if (bonusTimer <= 0) {
               bonusGameActive = false;
-              level = 10;
+              level = 6;
               resetLevel();
               return;
             }
@@ -278,17 +263,17 @@
               }
             }
 
-            // Draw detailed bucket
-            fill(150); // Base color
+            // Draw detailed gray bucket
+            fill(128); // Gray base color
             rect(bucketX - 25, height - 60, 50, 50, 10); // Main body
-            fill(200); // Rim
+            fill(160); // Lighter gray rim
             rect(bucketX - 25, height - 70, 50, 10, 5);
-            fill(100); // Handle
+            fill(100); // Dark gray handle
             arc(bucketX, height - 65, 20, 20, PI, 0);
 
             // Move bucket
             if (keyIsDown(LEFT_ARROW)) bucketX -= 5;
-            if (keyIsDown(RIGHT_ARROW)) bucketX += 5;
+            if (keyIsDown(RIGHT_ARROW)) bucketX += 2;
             if (touchDirection === 'left') bucketX -= 5;
             if (touchDirection === 'right') bucketX += 5;
             bucketX = constrain(bucketX, 25, width - 25);
@@ -300,9 +285,6 @@
           }
         } else if (!gameOver) {
           let windRange = level >= 10 ? 1.5 + (Math.min(level, 15) - 10) * 0.75 : 1.5 + (level - 1) * 0.75;
-          if (level >= 7 && level <= 9) {
-            windRange = 0.5; // Reduced wind for levels 7, 8, and 9
-          }
           windForce = random(-windRange, windRange);
           if (level >= 10) {
             toiletX = toiletBaseX + sin(frameCount * toiletSpeed) * 50;
@@ -311,8 +293,8 @@
           pooX += windForce;
           if (keyIsDown(LEFT_ARROW)) pooX -= 2;
           if (keyIsDown(RIGHT_ARROW)) pooX += 2;
-          if (touchDirection === 'left') pooX -= 2;
-          if (touchDirection === 'right') pooX += 2;
+          if (touchDirection === 'left') pooX -= 5;
+          if (touchDirection === 'right') pooX += 5;
           pooY += pooSpeed;
           pooX = constrain(pooX, 0, width);
 
@@ -322,10 +304,7 @@
             if (pooX >= toiletX - toiletWidth / 2 && pooX <= toiletX + toiletWidth / 2) {
               feedback.textContent = `Success! On to Level ${level + 1}!`;
               feedback.classList.add('text-green-600');
-              if (userInteracted) {
-                splashSound.play().catch(e => console.error('Splash sound failed:', e));
-              }
-              if (level === 9) {
+              if (level === 5) {
                 startBonusGame();
               } else {
                 level++;
