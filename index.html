@@ -275,7 +275,7 @@
             if (keyIsDown(LEFT_ARROW)) bucketX -= 5;
             if (keyIsDown(RIGHT_ARROW)) bucketX += 2;
             if (touchDirection === 'left') bucketX -= 5;
-            if (touchDirection === 'right') bucketX += 5;
+            if (touchDirection === 'right') pooX += 5;
             bucketX = constrain(bucketX, 25, width - 25);
 
             fill(255);
