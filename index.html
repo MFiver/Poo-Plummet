@@ -265,9 +265,9 @@
             fill(100); // Dark gray handle
             arc(bucketX, height - 65, 20, 20, PI, 0);
 
-            // Apply consistent touch movement to bucket
-            if (touchActive.left) bucketX -= 2;
-            if (touchActive.right) bucketX += 2;
+            // Apply faster consistent touch movement to bucket
+            if (touchActive.left) bucketX -= 5;
+            if (touchActive.right) bucketX += 5;
             bucketX = constrain(bucketX, 25, width - 25);
 
             fill(255);
