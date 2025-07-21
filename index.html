@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Poo Plummet</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
-    body { margin: 0; padding: 0; box-sizing: border-box; }
-    .game-container { display: block; margin: 0 auto; text-align: center; width: 400px; }
-    #gameCanvas { display: block; margin: 0 auto; touch-action: none; position: relative; }
+    body { margin: 0; padding: 0; box-sizing: border-box; min-height: 100vh; display: flex; flex-direction: column; align-items: center; background-color: #f3f4f6; }
+    .game-container { width: 400px; flex-grow: 1; display: flex; flex-direction: column; align-items: center; }
+    #gameCanvas { display: block; touch-action: none; position: relative; }
     .control-icon { position: absolute; width: 45px; height: 45px; background-color: rgba(128, 128, 128, 0.5); color: white; font-size: 24px; text-align: center; line-height: 45px; user-select: none; -webkit-user-select: none; }
   </style>
 </head>
-<body class="bg-gray-100">
+<body>
   <div class="game-container">
-    <div style="background-color: #8B4513; text-align: center; padding: 10px 0;">
+    <div style="background-color: #8B4513; text-align: center; padding: 10px 0; width: 100%;">
       <h1 style="font-size: 2.5em; font-weight: bold; color: white; font-family: Arial; text-shadow: 2px 2px 4px #000000; -webkit-text-stroke: 1px #654321;">POO PLUMMET</h1>
     </div>
     <p id="level" class="my-1 text-sm sm:text-base">Level: 1</p>
@@ -26,7 +26,7 @@
       <div id="rightControl" class="control-icon" style="right: 0; top: 50%; transform: translateY(-50%);">R</div>
     </div>
     <p id="feedback" class="mt-2 text-base sm:text-lg"></p>
-    <button id="restartButton" onclick="restartGame()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 hidden">Play Again</button>
+    <button id="restartButton" onclick="restartGame()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Play Again</button>
   </div>
 
   <script>
@@ -62,7 +62,7 @@
 
     function setup() {
       try {
-        let canvas = createCanvas(400, 500);
+        let canvas = createCanvas(400, 400);
         canvas.parent('gameCanvas');
         loadHighScore();
         resetLevel();
