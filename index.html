@@ -10,7 +10,7 @@
     * { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
     body { margin: 0; padding: 0; box-sizing: border-box; }
     .game-container { display: block; margin: 0 auto; text-align: center; width: 400px; }
-    #gameCanvas { display: block; margin: 0 auto; touch-action: none; }
+    #gameCanvas { display: block; margin: 0 auto; touch-action: none; position: relative; }
     .control-icon { position: absolute; width: 45px; height: 45px; background-color: rgba(128, 128, 128, 0.5); color: white; font-size: 24px; text-align: center; line-height: 45px; user-select: none; -webkit-user-select: none; }
   </style>
 </head>
@@ -21,11 +21,12 @@
     </div>
     <p id="level" class="my-1 text-sm sm:text-base">Level: 1</p>
     <p id="highScore" class="my-1 text-sm sm:text-base">High Score: None</p>
-    <div id="gameCanvas" class="mt-2" onselectstart="return false;"></div>
+    <div id="gameCanvas" class="mt-2" onselectstart="return false;">
+      <div id="leftControl" class="control-icon" style="left: 0; top: 50%; transform: translateY(-50%);"></div>
+      <div id="rightControl" class="control-icon" style="right: 0; top: 50%; transform: translateY(-50%);"></div>
+    </div>
     <p id="feedback" class="mt-2 text-base sm:text-lg"></p>
     <button id="restartButton" onclick="restartGame()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 hidden">Play Again</button>
-    <div id="leftControl" class="control-icon" style="left: 0; top: 50%; transform: translateY(-50%);">L</div>
-    <div id="rightControl" class="control-icon" style="right: 0; top: 50%; transform: translateY(-50%);">R</div>
   </div>
 
   <script>
@@ -62,6 +63,8 @@
         canvas.parent('gameCanvas');
         loadHighScore();
         resetLevel();
+        document.getElementById('leftControl').innerText = 'L';
+        document.getElementById('rightControl').innerText = 'R';
         document.getElementById('leftControl').addEventListener('touchstart', () => handleTouch('left'));
         document.getElementById('rightControl').addEventListener('touchstart', () => handleTouch('right'));
         document.getElementById('leftControl').addEventListener('touchend', handleTouchEnd);
@@ -83,8 +86,14 @@
     function handleTouch(direction) {
       userInteracted = true;
       console.log('Touch started:', direction);
-      if (direction === 'left') pooX -= 5;
-      if (direction === 'right') pooX += 5;
+      if (direction === 'left') {
+        if (!bonusGameActive) pooX -= 5;
+        else bucketX -= 5;
+      }
+      if (direction === 'right') {
+        if (!bonusGameActive) pooX += 5;
+        else bucketX += 5;
+      }
       if (!bonusGameActive) pooX = constrain(pooX, 0, width);
       else bucketX = constrain(bucketX, 25, width - 25);
     }
