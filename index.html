@@ -265,12 +265,12 @@
             fill(100); // Dark gray handle
             arc(bucketX, height - 65, 20, 20, PI, 0);
 
-            // Apply faster consistent touch movement to bucket
-            if (touchActive.left) bucketX -= 20;
-            if (touchActive.right) bucketX += 20;
+            // Apply consistent touch movement to bucket
+            if (touchActive.left) bucketX -= 15;
+            if (touchActive.right) bucketX += 15;
             // Apply arrow key movement to bucket during bonus game
             if (keyIsDown(LEFT_ARROW)) bucketX -= 2;
-            if (keyIsDown(RIGHT_ARROW)) bucketX -= -2; // Subtracting a negative moves right
+            if (keyIsDown(RIGHT_ARROW)) bucketX += 2;
             bucketX = constrain(bucketX, 25, width - 25);
 
             fill(255);
