@@ -7,6 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    * { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
     body { margin: 0; padding: 0; box-sizing: border-box; }
     .game-container { display: block; margin: 0 auto; text-align: center; width: 400px; }
     #gameCanvas { display: block; margin: 0 auto; touch-action: none; }
@@ -17,7 +18,7 @@
     <div class="bg-amber-900 text-white text-2xl sm:text-3xl md:text-4xl font-bold py-2">POO PLUMMET</div>
     <p id="level" class="my-1 text-sm sm:text-base">Level: 1</p>
     <p id="highScore" class="my-1 text-sm sm:text-base">High Score: None</p>
-    <div id="gameCanvas" class="mt-2"></div>
+    <div id="gameCanvas" class="mt-2" onselectstart="return false;"></div>
     <p id="feedback" class="mt-2 text-base sm:text-lg"></p>
     <button id="restartButton" onclick="restartGame()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 hidden">Play Again</button>
   </div>
@@ -33,7 +34,7 @@
     let animationTimer = 0;
     let particles = [];
     let userInteracted = false;
-    let touchDirection = null; // "left", "right", or null
+    let moveDirection = null; // "left", "right", or null
     const fartSound = new Audio('https://cdn.pixabay.com/audio/2023/03/29/12-24-24-614_1.mp3');
     const splashSound = new Audio('https://cdn.pixabay.com/audio/2022/08/02/14-21-45-597_1.mp3');
     const colors = [
@@ -60,9 +61,9 @@
         canvas.parent('gameCanvas');
         loadHighScore();
         resetLevel();
-        canvas.touchStarted(handleTouchStart);
-        canvas.touchMoved(handleTouchMove);
-        canvas.touchEnded(handleTouchEnd);
+        canvas.elt.addEventListener('touchstart', handleTouchStart, false);
+        canvas.elt.addEventListener('touchmove', handleTouchMove, false);
+        canvas.elt.addEventListener('touchend', handleTouchEnd, false);
         document.addEventListener('keydown', () => {
           userInteracted = true;
           console.log('User interacted: audio enabled');
@@ -77,24 +78,31 @@
       }
     }
 
-    function handleTouchStart() {
+    function handleTouchStart(event) {
       userInteracted = true;
-      let touchX = touches.length > 0 ? touches[0].x : mouseX;
-      touchDirection = touchX < width / 2 ? 'left' : 'right';
-      console.log('Touch started:', touchDirection, 'at x:', touchX);
+      if (event.touches.length > 0) {
+        let touchX = event.touches[0].clientX - canvas.elt.getBoundingClientRect().left;
+        moveDirection = touchX < 200 ? 'left' : 'right';
+        console.log('Touch started:', moveDirection, 'at x:', touchX, 'pooX:', pooX);
+      }
+      event.preventDefault();
       return false;
     }
 
-    function handleTouchMove() {
-      let touchX = touches.length > 0 ? touches[0].x : mouseX;
-      touchDirection = touchX < width / 2 ? 'left' : 'right';
-      console.log('Touch moved:', touchDirection, 'at x:', touchX);
+    function handleTouchMove(event) {
+      if (event.touches.length > 0) {
+        let touchX = event.touches[0].clientX - canvas.elt.getBoundingClientRect().left;
+        moveDirection = touchX < 200 ? 'left' : 'right';
+        console.log('Touch moved:', moveDirection, 'at x:', touchX, 'pooX:', pooX);
+      }
+      event.preventDefault();
       return false;
     }
 
-    function handleTouchEnd() {
-      touchDirection = null;
-      console.log('Touch ended');
+    function handleTouchEnd(event) {
+      moveDirection = null;
+      console.log('Touch ended, pooX:', pooX);
+      event.preventDefault();
       return false;
     }
 
@@ -178,8 +186,8 @@
           pooX += windForce;
           if (keyIsDown(LEFT_ARROW)) pooX -= 2;
           if (keyIsDown(RIGHT_ARROW)) pooX += 2;
-          if (touchDirection === 'left') pooX -= 2;
-          if (touchDirection === 'right') pooX += 2;
+          if (moveDirection === 'left') pooX -= 2; // Move left for left side press
+          if (moveDirection === 'right') pooX += 2; // Move right for right side press
           pooY += pooSpeed;
           pooX = constrain(pooX, 0, width);
 
