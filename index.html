@@ -266,8 +266,11 @@
             arc(bucketX, height - 65, 20, 20, PI, 0);
 
             // Apply faster consistent touch movement to bucket
-            if (touchActive.left) bucketX -= 5;
-            if (touchActive.right) bucketX += 5;
+            if (touchActive.left) bucketX -= 20;
+            if (touchActive.right) bucketX += 20;
+            // Apply arrow key movement to bucket during bonus game
+            if (keyIsDown(LEFT_ARROW)) bucketX -= 2;
+            if (keyIsDown(RIGHT_ARROW)) bucketX -= -2; // Subtracting a negative moves right
             bucketX = constrain(bucketX, 25, width - 25);
 
             fill(255);
@@ -350,8 +353,7 @@
           textSize(36 * scale);
           textStyle(BOLD);
           fill(random(255), random(255), random(255));
-          text("YOU MISSED!", width / 2, height / 2 - 20);
-          text("TRY AGAIN!", width / 2, height / 2 + 20);
+          text("YOU MISSED! TRY AGAIN!", width / 2, height / 2); // Single display
           for (let i = particles.length - 1; i >= 0; i--) {
             let p = particles[i];
             p.y += p.speed;
