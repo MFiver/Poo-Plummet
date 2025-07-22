@@ -94,12 +94,14 @@
           sound.loop();
           sound.play();
         });
+        document.getElementById('playMusicButton').textContent = 'Pause Poo Music';
       } else if (sound.isPlaying()) {
-        sound.stop();
+        sound.pause();
+        document.getElementById('playMusicButton').textContent = 'Play Poo Music';
       } else {
         sound.play();
+        document.getElementById('playMusicButton').textContent = 'Pause Poo Music';
       }
-      document.getElementById('playMusicButton').textContent = sound.isPlaying() ? 'Pause Poo Music' : 'Play Poo Music';
     }
 
     function startTouch(direction) {
