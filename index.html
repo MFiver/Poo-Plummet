@@ -16,7 +16,7 @@
 </head>
 <body>
   <div class="game-container">
-    <button id="playMusicButton" onclick="toggleMusic()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Play Poo Music</button>
+    <button id="playMusicButton" onclick="playMusic()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Play Poo Music</button>
     <div style="background-color: #8B4513; text-align: center; padding: 10px 0; width: 100%;">
       <h1 style="font-size: 2.5em; font-weight: bold; color: white; font-family: Arial; text-shadow: 2px 2px 4px #000000; -webkit-text-stroke: 1px #654321;">POO PLUMMET</h1>
     </div>
@@ -28,7 +28,6 @@
     </div>
     <p id="feedback" class="mt-2 text-base sm:text-lg"></p>
     <button id="restartButton" onclick="restartGame()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Play Again</button>
-    <audio id="backgroundMusic" src="audio/Mexican Instrumental Music - Mexican Fiesta.mp3" type="audio/mp3" preload="auto"></audio>
   </div>
 
   <script>
@@ -49,6 +48,7 @@
       [255, 255, 0] // Yellow
     ];
     let colorIndex = 0;
+    let sound;
 
     // Bonus game variables
     let bonusGameActive = false;
@@ -87,14 +87,20 @@
       }
     }
 
-    function toggleMusic() {
-      let audio = document.getElementById('backgroundMusic');
-      if (audio.paused) {
-        audio.play().catch(error => console.error('Audio play failed:', error));
+    function playMusic() {
+      if (!sound) {
+        sound = loadSound('audio/Mexican Instrumental Music - Mexican Fiesta.mp3', function() {
+          sound.setVolume(0.5);
+          sound.loop();
+          sound.play();
+        });
         document.getElementById('playMusicButton').textContent = 'Pause Poo Music';
-      } else {
-        audio.pause();
+      } else if (sound.isPlaying()) {
+        sound.pause();
         document.getElementById('playMusicButton').textContent = 'Play Poo Music';
+      } else {
+        sound.play();
+        document.getElementById('playMusicButton').textContent = 'Pause Poo Music';
       }
     }
 
