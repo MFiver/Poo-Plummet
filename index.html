@@ -1,13 +1,3 @@
-function setup() {
-  let canvas = createCanvas(400, 400);
-  canvas.parent('gameCanvas');
-  let sound = loadSound('audio/Mexican Instrumental Music - Mexican Fiesta.mp3', function() {
-    sound.setVolume(0.5);
-    sound.loop();
-    sound.play();
-  });
-}
-
 <body onload="initGame()">
   <div id="startTrigger" onclick="startSound()" style="position: absolute; top: -100px;"></div>
 
