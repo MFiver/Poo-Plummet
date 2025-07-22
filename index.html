@@ -12,11 +12,11 @@
     .game-container { width: 400px; flex-grow: 1; display: flex; flex-direction: column; align-items: center; }
     #gameCanvas { display: block; touch-action: none; position: relative; }
     .control-icon { position: absolute; width: 45px; height: 45px; background-color: rgba(128, 128, 128, 0.5); color: white; font-size: 24px; text-align: center; line-height: 45px; user-select: none; -webkit-user-select: none; }
-    #startTrigger { position: absolute; top: -100px; }
   </style>
 </head>
-<body onload="initGame()">
+<body>
   <div class="game-container">
+    <button id="playMusicButton" onclick="playMusic()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Play Poo Music</button>
     <div style="background-color: #8B4513; text-align: center; padding: 10px 0; width: 100%;">
       <h1 style="font-size: 2.5em; font-weight: bold; color: white; font-family: Arial; text-shadow: 2px 2px 4px #000000; -webkit-text-stroke: 1px #654321;">POO PLUMMET</h1>
     </div>
@@ -29,7 +29,6 @@
     <p id="feedback" class="mt-2 text-base sm:text-lg"></p>
     <button id="restartButton" onclick="restartGame()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Play Again</button>
   </div>
-  <div id="startTrigger" onclick="startSound()"></div>
 
   <script>
     let pooX, pooY, pooSpeed, windForce;
@@ -88,16 +87,19 @@
       }
     }
 
-    function initGame() {
-      document.getElementById('startTrigger').click();
-    }
-
-    function startSound() {
-      sound = loadSound('audio/Mexican Instrumental Music - Mexican Fiesta.mp3', function() {
-        sound.setVolume(0.5);
-        sound.loop();
+    function playMusic() {
+      if (!sound) {
+        sound = loadSound('audio/Mexican Instrumental Music - Mexican Fiesta.mp3', function() {
+          sound.setVolume(0.5);
+          sound.loop();
+          sound.play();
+        });
+      } else if (sound.isPlaying()) {
+        sound.stop();
+      } else {
         sound.play();
-      });
+      }
+      document.getElementById('playMusicButton').textContent = sound.isPlaying() ? 'Pause Poo Music' : 'Play Poo Music';
     }
 
     function startTouch(direction) {
