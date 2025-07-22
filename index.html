@@ -20,6 +20,12 @@ function startGame() {
   document.getElementById('startButton').style.display = 'none'; // Hide button after click
 }
 
+sound = loadSound('audio/yourmusic.mp3', function() {
+  sound.setVolume(0.5); // Adjust volume (0.0 to 1.0)
+  sound.loop(); // Enable looping
+  sound.play(); // Start playing
+});
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
