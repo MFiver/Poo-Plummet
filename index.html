@@ -1,3 +1,16 @@
+<button id="startButton" onclick="startGame()">Start Game</button>
+
+<script>
+  let sound;
+function startGame() {
+  sound = loadSound('audio/yourmusic.mp3', function() {
+    sound.setVolume(0.5);
+    sound.loop();
+    sound.play();
+  });
+  document.getElementById('startButton').style.display = 'none'; // Hide button after click
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
