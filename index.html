@@ -1,23 +1,24 @@
-<body onload="initGame()">
-  <div id="startTrigger" onclick="startSound()" style="position: absolute; top: -100px;"></div>
+let sound;
 
-  <script>
-    let sound;
+function setup() {
+  let canvas = createCanvas(400, 400);
+  canvas.parent('gameCanvas');
+  // Rest of your setup code...
+}
 
-    function initGame() {
-      document.getElementById('startTrigger').click();
-    }
+function initGame() {
+  document.getElementById('startTrigger').click();
+}
 
-    function startSound() {
-      sound = loadSound('audio/Mexican Instrumental Music - Mexican Fiesta.mp3', function() {
-        sound.setVolume(0.5);
-        sound.loop();
-        sound.play();
-      });
-    }
+function startSound() {
+  sound = loadSound('audio/Mexican Instrumental Music - Mexican Fiesta.mp3', function() {
+    sound.setVolume(0.5);
+    sound.loop();
+    sound.play();
+  });
+}
 
-    // Rest of your script...
-  </script>
+// Rest of your script...
 
 <!DOCTYPE html>
 <html lang="en">
